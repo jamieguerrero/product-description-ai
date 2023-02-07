@@ -1,4 +1,5 @@
 // @ts-check
+import "dotenv/config";
 import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
@@ -7,6 +8,7 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
+import { getResponse } from "./openai.js";
 
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
@@ -53,6 +55,12 @@ app.get("/api/products/create", async (_req, res) => {
     error = e.message;
   }
   res.status(status).send({ success: status === 200, error });
+});
+
+app.get("/api/openai", async (_req, res) => {
+  console.log("querying /openai");
+  const openai = await getResponse();
+  res.status(200).send({ success: true, openai: openai });
 });
 
 app.use(serveStatic(STATIC_PATH, { index: false }));

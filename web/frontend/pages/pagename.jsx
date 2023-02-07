@@ -1,7 +1,21 @@
 import { Card, Page, Layout, TextContainer, Heading } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
+import { useAppQuery } from "../hooks";
 
 export default function PageName() {
+  const { data } = useAppQuery({
+    url: "/api/openai",
+    reactQueryOptions: {
+      onSuccess: () => {
+        console.log("pagename data", data);
+      },
+      onError: (error) => {
+        console.log("error", error);
+        console.log("pagename data", data);
+      },
+    },
+  });
+
   return (
     <Page>
       <TitleBar
